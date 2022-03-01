@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var cors = require('cors');
 var MongoClient = require('mongodb').MongoClient;
-
+require('dotenv').config()
 var url = "mongodb+srv://amansky:amanjot11@cluster0.06niu.mongodb.net/Students?retryWrites=true&w=majority";
 
 
@@ -25,7 +25,7 @@ app.use('/', indexRouter);
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }).then(() => {
   console.log(`Database successfully connected`);
-  app.listen(3001, console.log("Running on 3001"));
+  app.listen(process.env.PORT || 3001, console.log("Running on 3001"));
 }).catch((e) => {
   console.log(`not connected`);
 })
