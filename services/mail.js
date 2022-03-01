@@ -101,7 +101,7 @@ async function generatePass(name, passId, enrollNo) {
   try {
 
     await nodeHtmlToImage({
-      output: `./assets/image${passId}.png`,
+      output: `/assets/image${passId}.png`,
       html: `<html>
         <head>
       
@@ -209,7 +209,7 @@ async function generatePass(name, passId, enrollNo) {
 
     })
 
-    var filePath = `./assets/image${passId}.png`;
+    var filePath = `/assets/image${passId}.png`;
     return filePath
 
   }
