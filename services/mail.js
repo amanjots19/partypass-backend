@@ -205,6 +205,7 @@ async function generatePass(name, passId, enrollNo) {
      </div>
    </div>
        </html>`,
+       puppeteerArgs: { args: ["--no-sandbox"] }
 
     })
 
