@@ -6,8 +6,8 @@ let controller = {};
 
 controller.sendInfo = async(req,res,next) => {
   try{
-    const {name, enrollmentNo, email, contactNo} = req.body;
-    let data = await services.mappingPass(name,enrollmentNo,email,contactNo)
+    const {name, enrollmentNo, email, contactNo,className} = req.body;
+    let data = await services.mappingPass(name,enrollmentNo,email,contactNo, className);
     console.log(data)
     res.json({
       success : true,

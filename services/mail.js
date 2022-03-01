@@ -7,11 +7,6 @@ var nodeHtmlToImage = require('node-html-to-image')
 const date = require('date-and-time');
 var fs = require('fs');
 const Student = require("../models/Students");
-const now = new Date();
-
-const MY_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341';
-
-
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -45,7 +40,7 @@ services.sendMail = function (Obj,filePath) {
           }
           
           resolve(info);
-          // fs.unlinkSync(filePath);
+          fs.unlinkSync(filePath);
         }
       );
     } catch (e) {
@@ -55,10 +50,12 @@ services.sendMail = function (Obj,filePath) {
   });
 };
 
-services.mappingPass = function (name, enrollNo, email, number) {
+services.mappingPass = function (name, enrollNo, email, number,className) {
   return new Promise(async (resolve, reject) => {
     try {
-      var passId = uuidv5(`${enrollNo}`, MY_NAMESPACE);
+      var nme = name.toLowerCase().split(' ')[0]
+
+      var passId = `${nme}${enrollNo}${className}`
       console.log(passId)
       var filePath = await generatePass(name,passId,email)
      
@@ -68,8 +65,12 @@ services.mappingPass = function (name, enrollNo, email, number) {
           text = `Hurrayyyy!!!!`;
           html = `<div>
             <h4>
-            Congratulations your entry for FIESTA 2022 has been confirmed now.
-            You can find your pass attached to this email.  
+            🌈✨GTBIT FIESTA 2022✨🌈
+
+            Waiting for you to witness the most entertaining freshers on March 11,2022. 
+            Timings: 1pm to 5pm 🌟 
+
+            We’ve attatched your entry pass and other details below⬇️ .
             </h4>.
 
             <p>Use this email to verify your entry at the Venue.</p>
@@ -84,7 +85,8 @@ services.mappingPass = function (name, enrollNo, email, number) {
         email: email,
         number: number,
         passId: passId,
-        enrollmentNo: enrollNo
+        enrollmentNo: enrollNo,
+        class: className
       })
       await student.save()
       
@@ -99,116 +101,69 @@ services.mappingPass = function (name, enrollNo, email, number) {
 
 async function generatePass(name, passId, enrollNo) {
   try {
-
+    const image = fs.readFileSync('./public/image/passImg.jpeg');
+    const base64Image = new Buffer.from(image).toString('base64');
+    const dataURI = 'data:image/jpeg;base64,' + base64Image
     await nodeHtmlToImage({
       output: `./public/image/${passId}.png`,
-      html: `<html>
-        <head>
-      
+      html: `<html lang="en">
+      <head>
         <style>
-        .lotto-ticket{
-          width: calc(100% - 34px);
-          margin: 0px;
-          padding:17px;
-          background:whitesmoke;
-        }
-        .notification_ineer_chart{
-            border-radius: 0px;
-            padding: 15px 9px 15px 9px;
-            background-color: white;
-        }
-        .schedule-first{
-            display: flex;
-            font-size: 20px;
-            text-transform: capitalize;
-            margin-bottom: 0px;
-            margin-top: 12px;
-        }
-        b.schedule-first{
-          justify-content: center;
-        }
-        b.schedule-first.binding_nubers {
-          margin-top: 35px;
-        }
-        p.with_numbers {
-          margin-bottom: 57px;
-          color: gray;
-        }
-        h1.name-title{
-            font-size: 22px;
-            color: black;
-            font-weight: 600;
-            text-align:center;
-            margin-bottom: 35px;
-        }
-        span.code-number {
-            padding-left: 9px;
-        }
-        .bottom-last{
-            padding-bottom: 10px;
-            border-bottom: 2px currentcolor dashed;
-        }
-        .qr-code {
-            margin-top:34px;
-        }
-        .qr-code ul{
+          * {
             padding: 0;
-            list-style-type: none;
+            margin: 0;
+            font-family: "Roboto", sans-serif;
+          }
+          
+          body {
+            box-sizing: border-box;
+            width: 684px;
+            height: fit-content;
+          }
+     
+          .outer-box {
             display: flex;
-            justify-content: space-between;
-            }
-        .qr-code ul.last-list{
-            justify-content: space-between;
-            width: 41%;
-            }
-         li.qr-code-list , p.product-qty{
-            font-size: 20px;
-            text-transform: uppercase;
-        }  
-        p.product-qty {
-            font-weight: 600;
-            text-transform: capitalize;
-            margin:0;
-        }
-        .amusement p{
-            margin:3px;
-            font-size: 20px;
-            text-transform: capitalize;
-        }
-        img {
+            flex: 1;
+            flex-direction: column;
+            position: relative;
+          }
+     
+          .pass-img {
+            margin: 0;
+          }
+          
+          .text-box {
+            display: flex;
+            justify-content: end;
+            margin: 0;
+            position: absolute;
+            bottom: 0;
             width: 100%;
-            height: 70px;
-            object-fit: cover;
-            padding-left: 12px;
-        }
+            padding: 16px 58px;
+          }
+          
+          .pass-number {
+            margin-right: 78px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+          }
+          </style>
+          </head>
+          <body>
+          <div class="outer-box">
+          <img class="pass-img" src="{{imageSource}}" alt="passImg" />
+          <div class="text-box">
+          <p class="pass-number">Pass Number: ${passId}</p>
+          </div>
+          </div>
+          </body>
+          </html>`,
+          content: { imageSource: dataURI },
+          puppeteerArgs: { args: ["--no-sandbox"] }
+          
+        })
         
-      </style>
-        </head>
-       <div class="lotto-ticket">
-    <div class="notification_ineer_chart">
-    <h1 class="name-title">FIESTA 2022</h1>
-      <p class="schedule-first date_and_time">
-        <span>Pass code:</span>
-        <span class="code-number">${passId}</span>
-      </p>
-      <p class="schedule-first">
-       <span>${date.format(now, 'YYYY/MM/DD HH:mm:ss')}</span>
-     </p>
-     <p class="schedule-first">
-       <span class="bottom-last">POS ID:<span class="code-number">${name}</span></span>
-     </p>
-     <div class="qr-code">
-     <ul>
-     <li class="qr-code-list"><span>${enrollNo}</span></li>
-     </ul>
-     </div>
-     </div>
-   </div>
-       </html>`,
-       puppeteerArgs: { args: ["--no-sandbox"] }
-
-    })
-
     var filePath = `./public/image/${passId}.png`;
     return filePath
 

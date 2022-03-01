@@ -8,7 +8,8 @@ const Student = new Schema({
   enrollmentNo: String,
   email: String,
   passId: {type:String, required: true},
-  number: Number
+  number: Number,
+  className: String,
 });
 
 module.exports = mongoose.model('Student', Student)
