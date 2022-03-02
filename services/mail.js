@@ -86,7 +86,7 @@ services.mappingPass = function (name, enrollNo, email, number,className) {
         number: number,
         passId: passId,
         enrollmentNo: enrollNo,
-        class: className
+        className: className
       })
       await student.save()
       
