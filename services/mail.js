@@ -15,7 +15,7 @@ var transporter = nodemailer.createTransport({
   }
 });
 let services = {};
-services.sendMail = function (Obj,filePath) {
+services.sendMail = function (Obj, filePath) {
   return new Promise(async (resolve, reject) => {
     try {
       let mail = await transporter.sendMail(
@@ -27,18 +27,18 @@ services.sendMail = function (Obj,filePath) {
           html: Obj.html,
           attachments: [
             {
-                filename: 'pass.png',
-                path: `${filePath}`, 
-                cid: "pass.png"
+              filename: 'pass.png',
+              path: `${filePath}`,
+              cid: "pass.png"
             }
-        ]
+          ]
         },
         (err, info) => {
           if (err) {
             console.log(err);
             reject({ msg: err, code: "NOT SENT" });
           }
-          
+
           resolve(info);
           fs.unlinkSync(filePath);
         }
@@ -50,20 +50,20 @@ services.sendMail = function (Obj,filePath) {
   });
 };
 
-services.mappingPass = function (name, enrollNo, email, number,className) {
+services.mappingPass = function (name, enrollNo, email, number, className) {
   return new Promise(async (resolve, reject) => {
     try {
       var nme = name.toLowerCase().split(' ')[0]
 
       var passId = `${nme}${enrollNo}${className}`
       console.log(passId)
-      var filePath = await generatePass(name,passId,email)
-     
+      var filePath = await generatePass(name, passId, email)
+
       let from = 'amnsky19@gmail.com';
-          to = `${email}`
-          subject = 'Hurrayyyy!!!! Pass Successfully Booked';
-          text = `Hurrayyyy!!!!`;
-          html = `<div>
+      to = `${email}`
+      subject = 'Hurrayyyy!!!! Pass Successfully Booked';
+      text = `Hurrayyyy!!!!`;
+      html = `<div>
             <h4>
             🌈✨GTBIT FIESTA 2022✨🌈
 
@@ -77,8 +77,8 @@ services.mappingPass = function (name, enrollNo, email, number,className) {
             </div>`;
 
       var Obj = new Mailer({ to: to, from: from, subject: subject, text: text, html: html });
-      await services.sendMail(Obj,filePath);
-      
+      await services.sendMail(Obj, filePath);
+
       // saving student details
       var student = new Student({
         name: name,
@@ -89,9 +89,9 @@ services.mappingPass = function (name, enrollNo, email, number,className) {
         className: className
       })
       await student.save()
-      
-      
-      resolve({message: "Email Sent"})
+
+
+      resolve({ message: "Email Sent" })
     } catch (error) {
       console.log(error);
       reject(error)
@@ -101,13 +101,16 @@ services.mappingPass = function (name, enrollNo, email, number,className) {
 
 async function generatePass(name, passId, enrollNo) {
   try {
-    const image = fs.readFileSync('./public/image/passImg.jpeg');
+    const image = fs.readFileSync('./public/image/updatedImage.jpeg');
     const base64Image = new Buffer.from(image).toString('base64');
     const dataURI = 'data:image/jpeg;base64,' + base64Image
     await nodeHtmlToImage({
       output: `./public/image/${passId}.png`,
       html: `<html lang="en">
       <head>
+      <style>
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital@1&display=swap');
+      </style>
         <style>
           * {
             padding: 0;
@@ -134,7 +137,7 @@ async function generatePass(name, passId, enrollNo) {
           
           .text-box {
             display: flex;
-            justify-content: end;
+            justify-content: center;
             margin: 0;
             position: absolute;
             bottom: 0;
@@ -143,10 +146,11 @@ async function generatePass(name, passId, enrollNo) {
           }
           
           .pass-number {
-            margin-right: 78px;
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
+            margin-right: 100px;
+            font-family: 'Montserrat', sans-serif;
+            color: #e5a34c;
+            font-size: 12px;
+            font-weight: 500;
           }
           </style>
           </head>
@@ -159,11 +163,11 @@ async function generatePass(name, passId, enrollNo) {
           </div>
           </body>
           </html>`,
-          content: { imageSource: dataURI },
-          puppeteerArgs: { args: ["--no-sandbox"] }
-          
-        })
-        
+      content: { imageSource: dataURI },
+      puppeteerArgs: { args: ["--no-sandbox"] }
+
+    })
+
     var filePath = `./public/image/${passId}.png`;
     return filePath
 
