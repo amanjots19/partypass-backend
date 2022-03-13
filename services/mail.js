@@ -10,8 +10,8 @@ const Student = require("../models/Students");
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'gtbitfreshers2022@gmail.com',
-    pass: 'gtbitofficial'
+    user: '',
+    pass: ''
   }
 });
 let services = {};
@@ -27,9 +27,9 @@ services.sendMail = function (Obj, filePath) {
           html: Obj.html,
           attachments: [
             {
-              filename: 'pass.png',
+              filename: '.png',
               path: `${filePath}`,
-              cid: "pass.png"
+              cid: ".png"
             }
           ]
         },
@@ -40,7 +40,7 @@ services.sendMail = function (Obj, filePath) {
           }
 
           resolve(info);
-          fs.unlinkSync(filePath);
+          // fs.unlinkSync(filePath);
         }
       );
     } catch (e) {
@@ -57,7 +57,7 @@ services.mappingPass = function (name, enrollNo, email, number, className) {
 
       var passId = `${nme}${enrollNo}${className}`
       console.log(passId)
-      var filePath = await generatePass(name, passId, email)
+      // var filePath = await generatePass(name, passId, email)
 
       let from = 'amnsky19@gmail.com';
       to = `${email}`
@@ -77,7 +77,7 @@ services.mappingPass = function (name, enrollNo, email, number, className) {
             </div>`;
 
       var Obj = new Mailer({ to: to, from: from, subject: subject, text: text, html: html });
-      await services.sendMail(Obj, filePath);
+      await services.sendMail(Obj);
 
       // saving student details
       var student = new Student({
