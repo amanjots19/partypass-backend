@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var cors = require('cors');
 var MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
-var url = "mongodb+srv://amansky:amanjot11@cluster0.06niu.mongodb.net/Students?retryWrites=true&w=majority";
+// var url = "mongodb+srv://amansky:amanjot11@cluster0.06niu.mongodb.net/Students?retryWrites=true&w=majority";
 
 
 var app = express();
@@ -23,12 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }).then(() => {
-  console.log(`Database successfully connected`);
-  app.listen(process.env.PORT || 3001, console.log("Running on 3001"));
-}).catch((e) => {
-  console.log(`not connected`);
-})
+
+app.listen(process.env.PORT || 3001, console.log("Running on 3001"));
 
 
 module.exports = app;

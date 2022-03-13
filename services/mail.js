@@ -50,16 +50,16 @@ services.sendMail = function (Obj, filePath) {
   });
 };
 
-services.mappingPass = function (name, enrollNo, email, number, className) {
+services.mappingPass = function ( email) {
   return new Promise(async (resolve, reject) => {
     try {
       var nme = name.toLowerCase().split(' ')[0]
 
-      var passId = `${nme}${enrollNo}${className}`
-      console.log(passId)
+      // var passId = `${nme}${enrollNo}${className}`
+      // console.log(passId)
       // var filePath = await generatePass(name, passId, email)
 
-      let from = 'amnsky19@gmail.com';
+      let from = '';
       to = `${email}`
       subject = 'Hurrayyyy!!!! Pass Successfully Booked';
       text = `Hurrayyyy!!!!`;
@@ -73,22 +73,22 @@ services.mappingPass = function (name, enrollNo, email, number, className) {
             We’ve attatched your entry pass and other details below⬇️ .
             </h4>.
 
-            <p>Use this email to verify your entry at the Venue.</p>
+            
             </div>`;
 
       var Obj = new Mailer({ to: to, from: from, subject: subject, text: text, html: html });
       await services.sendMail(Obj);
 
       // saving student details
-      var student = new Student({
-        name: name,
-        email: email,
-        number: number,
-        passId: passId,
-        enrollmentNo: enrollNo,
-        className: className
-      })
-      await student.save()
+      // var student = new Student({
+      //   name: name,
+      //   email: email,
+      //   number: number,
+      //   passId: passId,
+      //   enrollmentNo: enrollNo,
+      //   className: className
+      // })
+      // await student.save()
 
 
       resolve({ message: "Email Sent" })
